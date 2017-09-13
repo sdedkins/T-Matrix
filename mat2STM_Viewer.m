@@ -15,4 +15,4 @@ new_data.name = 'matrix';
 new_data.type = 3;
 new_data.var = '';
 obj = new_data;
-img_obj_viewer4(new_data);
+img_obj_viewer2(new_data);
