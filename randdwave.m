@@ -5,7 +5,7 @@ function [ ] = randdwave( )
 theta=linspace(0,pi,500);
 
 Delta=randpm*sin(2*theta);
-cutoff=2;
+cutoff=1;
 
 for i=1:cutoff
 
