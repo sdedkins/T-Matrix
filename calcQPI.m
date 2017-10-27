@@ -1,4 +1,4 @@
-function [ dnqUnwrap ,dispersion ] = calcQPI( E_tb,D,Epoints,d,Vs,Vm )
+function [ dnqUnwrap ,dispersion ] = calcQPI( E_tb,D,Epoints,d,Vs,Vm,res )
 %UNTITLED8 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -20,10 +20,34 @@ function [ dnqUnwrap ,dispersion ] = calcQPI( E_tb,D,Epoints,d,Vs,Vm )
 %calculate dn, change in density of states
 [ dnr ] = deltaDOS( A11r, A22r );
 
-dnq = fftshift(fftshift(fft2(dnr),1),2);
+dnr_shift=ifftshift(ifftshift(dnr,1),2);
 
-dnqUnwrap=[ real(dnq(:)); imag(dnq(:))];
-dispersion = -imag(G11(:));
+dnq = fftshift(fftshift(fft2(dnr_shift),1),2);
+
+n_q=size(dnq,1);
+mid_px=ceil(n_q/2);
+
+small_dnq=real(dnq(1:mid_px,1:mid_px,:));
+
+
+interp_points=linspace(1,mid_px,res);
+real_points=linspace(1,mid_px,mid_px);
+
+[Xq,Yq,Zq]=meshgrid(interp_points,interp_points,Epoints);
+[X,Y,Z]=meshgrid(real_points,real_points,Epoints);
+
+smaller_dispersion=interp3(X,Y,Z,-imag(G11(1:mid_px,1:mid_px,:)),Xq,Yq,Zq);
+smaller_dnq=interp3(X,Y,Z,small_dnq,Xq,Yq,Zq);
+
+% subtract mean and normalize
+
+mu=mean(smaller_dnq(:));
+range=max(smaller_dnq(:))-min(smaller_dnq(:));
+smaller_dnq=(smaller_dnq-mu)/(0.5*range);
+
+
+dnqUnwrap=smaller_dnq(:);
+dispersion = smaller_dispersion(:);
 
 
 
