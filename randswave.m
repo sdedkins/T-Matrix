@@ -5,7 +5,7 @@ function [  ] = randswave( )
 theta=linspace(0,pi,500);
 
 Delta=randpm;
-cutoff=3;
+cutoff=2;
 
 for i=1:cutoff
 

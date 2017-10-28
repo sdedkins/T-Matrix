@@ -2,7 +2,7 @@
 tic
 filename='testexamples2.mat';
 
-n_examples=100;
+n_examples=5000;
 
 n_q=501;
 n_E=21;
@@ -37,8 +37,8 @@ else
     
     examples=zeros(n_px*n_E,n_examples);
     E_k=zeros(n_px*n_E,n_examples);
-    labels=zeros(n_examples,1);
-    gap_harmonics=zeros(3,n_examples);
+    labels=ones(n_examples,1);
+    gap_harmonics=zeros(4,n_examples);
     save(filename,'examples','labels','gap_harmonics','-v7.3');
     n=0;
     
@@ -48,11 +48,10 @@ end
 %m = matfile(filename, 'Writable', true);
 
 
-delete(gcp)
 
 iter=n_examples-n;
 delete(gcp)
-poolobj=parpool('local',8);
+poolobj=parpool('local',4);
 
 tic
 parfor i=1:iter
@@ -61,8 +60,8 @@ parfor i=1:iter
 %     % calculate gap function
     D0 = 0.03;
     %[ D ] = gap_function( qx,qy,D0 );
-    %[ D ] = random_swave_gap( qx,qy,D0,2 );
-    [ D,coeffs ] = random_dwave_gap( qx,qy,D0,3); 
+    [ D, coeffs ] = random_swave_gap( qx,qy,D0,3 );
+    %[ D,coeffs ] = random_dwave_gap( qx,qy,D0,3); 
     gap_harmonics(:,i+n)=coeffs;
     
     
@@ -78,5 +77,7 @@ parfor i=1:iter
 end
  save(filename,'examples','labels','gap_harmonics','-v7.3');
  toc
-  delete(poolobj)
+ delete(poolobj)
+  
+  exit
 

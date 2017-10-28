@@ -1,14 +1,19 @@
-function [ D ] = random_swave_gap( qx,qy,D0,n_harmonics )
+function [ D,coeffs ] = random_swave_gap( qx,qy,D0,n_harmonics )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
 theta=atan(qy./qx);
 
-D=repmat(randpm,size(qx));
+coeffs=zeros(n_harmonics,1);
+
+coeffs(1)=randpm;
+D=repmat(coeffs(1),size(qx));
+
 % 
 for i=1:n_harmonics
-
-    D=D+randpm*cos(4*i*theta);
+    
+    coeffs(i+1)=randpm;
+    D=D+coeffs(i+1)*cos(4*i*theta);
 
 end
 
